@@ -17,7 +17,7 @@ func main() {
 	}
 	token := string(token_bytes)
 	token = strings.TrimRight(token, "\r\n")
-	fmt.Println(token) // jsut for now for debugging
+	// fmt.Println(token) // jsut for now for debugging
 
 	// test out registration
 	//response, _ := api.SpaceTradersCommand(`{"symbol":"TestOtaku", "faction": "COSMIC" }`, "register", "", "post")
