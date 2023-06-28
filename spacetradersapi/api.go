@@ -45,7 +45,6 @@ func SpaceTradersCommand(parameters string, endpoint string, authToken string, h
 	jsonBody := []byte(parameters)
 	bodyReader := bytes.NewReader(jsonBody)
 	bearer := "Bearer " + authToken
-	fmt.Println(bearer)
 
 	if httpVerb == "get" {
 		request, err := http.NewRequest(http.MethodGet, fullURL, nil)

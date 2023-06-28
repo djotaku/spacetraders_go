@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	api "www.github.com/djotaku/spacetraders_go/spacetradersapi"
 )
@@ -15,6 +16,7 @@ func main() {
 		os.Exit(1)
 	}
 	token := string(token_bytes)
+	token = strings.TrimRight(token, "\r\n")
 	fmt.Println(token) // jsut for now for debugging
 
 	// test out registration
