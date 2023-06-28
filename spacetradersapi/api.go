@@ -94,7 +94,7 @@ func GetAgent(authToken string) Agent {
 	if err != nil {
 		fmt.Println("Error accessing Get Agent endpoint. Error: ", err)
 	}
-	fmt.Println(agentResult)
+	fmt.Println(agentResult) // it looks liek {"data""{stuff}"}
 	var agentData Agent
 	json.Unmarshal([]byte(agentResult), &agentData)
 	fmt.Printf("%v", agentData)
