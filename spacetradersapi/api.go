@@ -9,10 +9,6 @@ import (
 	"net/http"
 )
 
-type agentResponse struct {
-	Data Agent `json:"data"`
-}
-
 type apiResult struct {
 	Data any
 }
@@ -102,10 +98,6 @@ func GetAgent(authToken string) Agent {
 	if err != nil {
 		fmt.Println("Error accessing Get Agent endpoint. Error: ", err)
 	}
-	//this works - want to try something else
-	//var response agentResponse
-	//json.Unmarshal([]byte(agentResult), &response)
-	//return response.Data
 	agent := &Agent{}
 	json.Unmarshal([]byte(agentResult), &apiResult{agent})
 	return *agent
