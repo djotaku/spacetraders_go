@@ -24,6 +24,5 @@ func main() {
 	//fmt.Print(response)
 	// test out Get Agent endpoint
 	agent := api.GetAgent(token)
-	fmt.Println(agent)
 	fmt.Printf("AccountId: %s, Symbol: %s, HQ: %s, Credits: %d, Faction: %s", agent.AccountId, agent.Symbol, agent.Headquarters, agent.Credits, agent.StartingFaction)
 }
