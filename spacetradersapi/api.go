@@ -10,7 +10,7 @@ import (
 )
 
 type apiResponse struct {
-	Data any
+	Data Agent `json:"data"`
 }
 
 type Agent struct {
@@ -98,11 +98,7 @@ func GetAgent(authToken string) Agent {
 	if err != nil {
 		fmt.Println("Error accessing Get Agent endpoint. Error: ", err)
 	}
-	// fmt.Println(agentResult) // it looks liek {"data""{stuff}"}
-	agentData := &Agent{}
-	json.Unmarshal([]byte(agentResult), &apiResponse{agentData})
-	fmt.Printf("Agent Data: %v\n", agentData)
-	agentReturn := *agentData
-	fmt.Printf("Credits %d", agentReturn.Credits)
-	return agentReturn
+	var response apiResponse
+	json.Unmarshal([]byte(agentResult), &response)
+	return response.Data
 }
