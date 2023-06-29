@@ -13,6 +13,23 @@ type apiResult struct {
 	Data any
 }
 
+type Leaderboard struct {
+	MostCredits         []map[string]any
+	MostSubmittedCharts []map[string]any
+}
+
+type ServerStatus struct {
+	Status        string
+	Version       string
+	ResetDate     string
+	Description   string
+	Stats         map[string]int64
+	Leaderboards  Leaderboard
+	ServerResets  map[string]string
+	Announcements []map[string]string
+	Links         []map[string]string
+}
+
 type Agent struct {
 	AccountId       string
 	Symbol          string
@@ -101,4 +118,15 @@ func GetAgent(authToken string) Agent {
 	agent := &Agent{}
 	json.Unmarshal([]byte(agentResult), &apiResult{agent})
 	return *agent
+}
+
+func GetStatus(authToken string) ServerStatus {
+	statusResult, err := SpaceTradersCommand("", "", authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing Get Status endpoint. Error: ", err)
+	}
+	//fmt.Println(statusResult)
+	var status ServerStatus
+	json.Unmarshal([]byte(statusResult), &status)
+	return status
 }
