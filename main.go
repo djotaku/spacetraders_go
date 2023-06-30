@@ -75,7 +75,7 @@ func main() {
 	fmt.Printf("\tThis faction is recruiting? %v\n", factionDetails.IsRecruiting)
 
 	allFactions := api.ListFactions(token, 10, 1)
-	fmt.Println(allFactions)
+	fmt.Println(allFactions.Factions[0].Description)
 
 	// get back to contracts later
 	contracts := api.ListContracts(token, 10, 1)

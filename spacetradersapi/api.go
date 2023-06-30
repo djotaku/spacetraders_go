@@ -49,8 +49,8 @@ type Contract struct {
 }
 
 type FactionList struct {
-	Data []Faction
-	Meta map[string]int
+	Factions []Faction `json:"data"`
+	Meta     map[string]int
 }
 
 type Faction struct {
@@ -158,12 +158,14 @@ func GetFaction(authToken string, factionSymbol string) Faction {
 	return *faction
 }
 
-func ListFactions(authToken string, limit int, page int) []Faction {
+func ListFactions(authToken string, limit int, page int) FactionList {
 	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
 	factionResult, err := SpaceTradersCommand(parameters, "factions", authToken, "get")
 	if err != nil {
 		fmt.Println("Error accessing List Contracts endpoint. Error: ", err)
 	}
-	fmt.Printf("List Factions debugging from API: %s", factionResult)
-	return nil
+	//fmt.Printf("List Factions debugging from API: %s", factionResult)
+	var factionList FactionList
+	json.Unmarshal([]byte(factionResult), &factionList)
+	return factionList
 }
