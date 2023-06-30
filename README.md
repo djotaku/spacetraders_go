@@ -10,3 +10,9 @@ I'm going to use this project to learn how to create GUIs with Go. I usually cre
 Although UIs should be done after planning, this game is so new (and evolving) that the UI will probably evolve as I understand what it is I would like it to do and how it would be most useful to me.
 
 Finally, I will also have some automation "scripts" in this repo as well. I imagine I'll have a GUI screen to launch various scripts to do certain things. It's all up in the air and I hope to have some fun. 
+
+Endpoints remaining TODO
+
+- Contracts
+- Fleet
+- Systems

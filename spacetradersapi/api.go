@@ -146,6 +146,18 @@ func ListContracts(authToken string, limit int, page int) []Contract {
 	return nil
 }
 
+func GetContract(authToken string, contractID string) Contract {
+	parameters := fmt.Sprintf(`{"contractID": %s}`, contractID)
+	contractURL := fmt.Sprintf("my/contracts/%s", contractID)
+	factionResults, err := SpaceTradersCommand(parameters, contractURL, authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing Get Contract endpoint. Error: ", err)
+	}
+	contract := &Contract{}
+	json.Unmarshal([]byte(factionResults), &apiResult{contract})
+	return *contract
+}
+
 func GetFaction(authToken string, factionSymbol string) Faction {
 	parameters := fmt.Sprintf(`{"factionSymbol": %s}`, factionSymbol)
 	factionURL := fmt.Sprintf("factions/%s", factionSymbol)

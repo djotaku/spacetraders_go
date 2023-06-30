@@ -78,6 +78,7 @@ func main() {
 	fmt.Println(allFactions.Factions[0].Description)
 
 	// get back to contracts later
+	// Also GetContract endpoint
 	contracts := api.ListContracts(token, 10, 1)
 	fmt.Printf("Contract debugging from main: %s", contracts)
 }
