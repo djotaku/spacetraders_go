@@ -48,6 +48,11 @@ type Contract struct {
 	DeadlineToAccept string
 }
 
+type FactionList struct {
+	Data []Faction
+	Meta map[string]int
+}
+
 type Faction struct {
 	Symbol       string
 	Name         string
@@ -129,4 +134,36 @@ func GetStatus(authToken string) ServerStatus {
 	var status ServerStatus
 	json.Unmarshal([]byte(statusResult), &status)
 	return status
+}
+
+func ListContracts(authToken string, limit int, page int) []Contract {
+	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
+	contractResult, err := SpaceTradersCommand(parameters, "my/contracts", authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing List Contracts endpoint. Error: ", err)
+	}
+	fmt.Printf("Contract debugging from API: %s", contractResult)
+	return nil
+}
+
+func GetFaction(authToken string, factionSymbol string) Faction {
+	parameters := fmt.Sprintf(`{"factionSymbol": %s}`, factionSymbol)
+	factionURL := fmt.Sprintf("factions/%s", factionSymbol)
+	factionResults, err := SpaceTradersCommand(parameters, factionURL, authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing Get Faction endpoint. Error: ", err)
+	}
+	faction := &Faction{}
+	json.Unmarshal([]byte(factionResults), &apiResult{faction})
+	return *faction
+}
+
+func ListFactions(authToken string, limit int, page int) []Faction {
+	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
+	factionResult, err := SpaceTradersCommand(parameters, "factions", authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing List Contracts endpoint. Error: ", err)
+	}
+	fmt.Printf("List Factions debugging from API: %s", factionResult)
+	return nil
 }

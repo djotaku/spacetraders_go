@@ -22,9 +22,12 @@ func main() {
 	// test out registration
 	//response, _ := api.SpaceTradersCommand(`{"symbol":"TestOtaku", "faction": "COSMIC" }`, "register", "", "post")
 	//fmt.Print(response)
+
 	// test out Get Agent endpoint
 	agent := api.GetAgent(token)
 	fmt.Printf("AccountId: %s, Symbol: %s, HQ: %s, Credits: %d, Faction: %s\n", agent.AccountId, agent.Symbol, agent.Headquarters, agent.Credits, agent.StartingFaction)
+
+	// Test out server status endpoint
 	serverStatus := api.GetStatus(token)
 	fmt.Printf("##############################\nServer Status: \n")
 	fmt.Printf("Status: %s\n", serverStatus.Status)
@@ -47,4 +50,34 @@ func main() {
 	fmt.Printf("Server Resets:\n")
 	fmt.Printf("\t Next Date for Reset: %s\n", serverStatus.ServerResets["next"])
 	fmt.Printf("\t Frequency of Resets: %s\n", serverStatus.ServerResets["frequency"])
+	fmt.Printf("Announcements: \n")
+	for _, announcement := range serverStatus.Announcements {
+		fmt.Printf("\tTitle: %s\n", announcement["title"])
+		fmt.Printf("\t\t %s\n", announcement["body"])
+	}
+	fmt.Printf("Links: \n")
+	for _, link := range serverStatus.Links {
+		fmt.Printf("\t%s: %s\n", link["name"], link["url"])
+	}
+
+	// Test out Factions Endpoints
+	factionDetails := api.GetFaction(token, "COSMIC")
+	fmt.Println("Faction Test:")
+	fmt.Printf("\tFaction Symbol: %s\n", factionDetails.Symbol)
+	fmt.Printf("\tFaction Name: %s\n", factionDetails.Name)
+	fmt.Printf("\tFaction Description: %s\n", factionDetails.Description)
+	fmt.Printf("\tFaction HQ Waypoint: %s\n", factionDetails.Headquarters)
+	fmt.Println("\tFaction Traits:")
+	for _, trait := range factionDetails.Traits {
+		fmt.Printf("\t\tSymbol/Name: %s/%s\n", trait["symbol"], trait["name"])
+		fmt.Printf("\t\tDescription: %s\n", trait["description"])
+	}
+	fmt.Printf("\tThis faction is recruiting? %v\n", factionDetails.IsRecruiting)
+
+	allFactions := api.ListFactions(token, 10, 1)
+	fmt.Println(allFactions)
+
+	// get back to contracts later
+	contracts := api.ListContracts(token, 10, 1)
+	fmt.Printf("Contract debugging from main: %s", contracts)
 }
