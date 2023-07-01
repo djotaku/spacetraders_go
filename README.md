@@ -14,5 +14,7 @@ Finally, I will also have some automation "scripts" in this repo as well. I imag
 Endpoints remaining TODO
 
 - Contracts
+    - Deliver Cargo to Contract
+    - FullFill Contract
 - Fleet
 - Systems
