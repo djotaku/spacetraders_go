@@ -38,11 +38,24 @@ type Agent struct {
 	StartingFaction string
 }
 
+type ContractDeliveryObject struct {
+	TradeSymbol       string
+	DestinationSymbol string
+	UnitsRequired     int
+	UnitsFulfilled    int
+}
+
+type ContractTerms struct {
+	Deadline string
+	Payment  map[string]int
+	Deliver  []ContractDeliveryObject
+}
+
 type Contract struct {
 	Id               string
 	FactionSymbol    string
 	Type             string
-	Terms            []map[string]string
+	Terms            ContractTerms
 	Accepted         bool
 	Fulfilled        bool
 	DeadlineToAccept string
@@ -349,6 +362,6 @@ func RegisterNewAgent(faction string, agentName string) string {
 	json.Unmarshal([]byte(registrationResult), &apiResult{agent})
 	contract := AcceptContract(agent.Token, agent.Contract.Id)
 	fmt.Printf("Was the contract accepted? %t\n", contract.ContractDetails.Accepted)
-	fmt.Printf("Your deadline to accept the contract is: %s\n", contract.ContractDetails.DeadlineToAccept)
+	fmt.Printf("Your deadline to complete the contract is: %s\n", contract.ContractDetails.Terms.Deadline)
 	return agent.Token
 }
