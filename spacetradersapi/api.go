@@ -130,6 +130,39 @@ func GetContract(authToken string, contractID string) Contract {
 	return *contract
 }
 
+type deliveredContract struct{
+	contract Contract
+	cargo ShipCargo
+}
+
+func DeliverCargoToContract(authToken string, contractID string, shipSymbol string, tradeSymbol string, units int) (Contract, ShipCargo){
+	parameters := fmt.Sprintf(`{"shipSymbol": %s,"tradeSymbol": %s,"units": %d}`, shipSymbol, tradeSymbol, units)
+	deliveryURL := fmt.Sprintf("my/contracts/%s/deliver", contractID)
+	deliveryResults, err := SpaceTradersCommand(parameters, deliveryURL, authToken, "post")
+	if err != nil {
+		fmt.Println("Error accessing Deliver Cargo to Contract endpoint. Error: ", err)
+	}
+	delivery := &deliveredContract{}
+	json.Unmarshal([]byte(deliveryResults), &apiResult{delivery})
+	return delivery.contract, delivery.cargo
+}
+
+type ContractFulFilled struct{
+	agent Agent
+	contract Contract
+}
+
+func FulfillContract(authToken string, contractID string)(Agent, Contract){
+	parameters := "{}"
+	fulfillURL := fmt.Sprintf("my/contracts/%s/fulfill", contractID)
+	fulfillResults, err := SpaceTradersCommand(parameters, fulfillURL, authToken, "post")
+	if err != nil {
+		fmt.Println("Error accessing Fulfill Contract endpoint. Error: ", err)
+	}
+	fulfilledContract := &ContractFulFilled{}
+	json.Unmarshal([]byte(fulfillResults), &apiResult{fulfilledContract})
+	return fulfilledContract.agent, fulfilledContract.contract
+}
 type FactionList struct {
 	Factions []Faction `json:"data"`
 	Meta     map[string]int

@@ -12,9 +12,5 @@ Although UIs should be done after planning, this game is so new (and evolving) t
 Finally, I will also have some automation "scripts" in this repo as well. I imagine I'll have a GUI screen to launch various scripts to do certain things. It's all up in the air and I hope to have some fun. 
 
 Endpoints remaining TODO
-
-- Contracts
-    - Deliver Cargo to Contract
-    - FullFill Contract
 - Fleet
 - Systems
