@@ -336,6 +336,21 @@ type NewAgentResponse struct {
 	Token    string
 }
 
+type ShipList struct {
+	Ships []Ship `json:"data"`
+	Meta      map[string]int}
+
+func ListShips(authToken string, limit int, page int) ShipList {
+	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
+	shipResult, err := SpaceTradersCommand(parameters, "my/ships", authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing List Ships endpoint. Error: ", err)
+	}
+	var shipList ShipList
+	json.Unmarshal([]byte(shipResult), &shipList)
+	return shipList
+}
+
 // SpaceTradersCommand sends a command to the Space Traders API
 func SpaceTradersCommand(parameters string, endpoint string, authToken string, httpVerb string) (string, error) {
 	apiURLBase := "https://api.spacetraders.io/v2/"
