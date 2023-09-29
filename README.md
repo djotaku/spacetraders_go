@@ -3,7 +3,7 @@ Go code to interact with the Space Traders API
 
 I just learned about this neat API-based video game called [Space Traders](https://spacetraders.io). It seems kind of like EVE Online, but built with the API as a first-class citizen. Using the API to automate your tasks isn't cheating - it's encouraged!
 
-It's an interesting concept where the userbase makes the UIs for the game and players are free to make their own or use someone else's. (Hopefully the API doesn't eventually go the way of Twitter or Reddit)
+It's an interesting concept where the userbase makes the UIs for the game and players are free to make their own or use someone else's. (Hopefully the API doesn't eventually go the way of Twitter or Reddit - that is, start charging money)
 
 I'm going to use this project to learn how to create GUIs with Go. I usually create UIs with Qt, but the Go bindings seem really annoying to use. So I'm going to learn how to use [Fyne](https://fyne.io), one of the most recommended UIs for Go.
 
