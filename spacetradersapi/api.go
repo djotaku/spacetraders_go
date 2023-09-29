@@ -38,6 +38,30 @@ type Agent struct {
 	StartingFaction string
 }
 
+func GetAgent(authToken string) Agent {
+	agentResult, err := SpaceTradersCommand("", "my/agent", authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing Get Agent endpoint. Error: ", err)
+	}
+	agent := &Agent{}
+	json.Unmarshal([]byte(agentResult), &apiResult{agent})
+	return *agent
+}
+func RegisterNewAgent(faction string, agentName string) string {
+	parameters := fmt.Sprintf(`{"symbol": "%s", "faction": "%s" }`, agentName, faction)
+	registrationResult, err := SpaceTradersCommand(parameters, "register", "", "post")
+	if err != nil {
+		fmt.Println("Error registering. Error: ", err)
+	}
+	//fmt.Println(registrationResult)
+	agent := &NewAgentResponse{}
+	json.Unmarshal([]byte(registrationResult), &apiResult{agent})
+	contract := AcceptContract(agent.Token, agent.Contract.Id)
+	fmt.Printf("Was the contract accepted? %t\n", contract.ContractDetails.Accepted)
+	fmt.Printf("Your deadline to complete the contract is: %s\n", contract.ContractDetails.Terms.Deadline)
+	return agent.Token
+}
+
 type ContractDeliveryObject struct {
 	TradeSymbol       string
 	DestinationSymbol string
@@ -71,6 +95,41 @@ type AcceptedContract struct {
 	ContractDetails Contract `json:"contract"`
 }
 
+func AcceptContract(authToken string, contractID string) AcceptedContract {
+	contractURL := fmt.Sprintf("my/contracts/%s/accept", contractID)
+
+	contractResults, err := SpaceTradersCommand("", contractURL, authToken, "post")
+	if err != nil {
+		fmt.Println("Error accessing Accept Contract endpoint. Error: ", err)
+	}
+	acceptedContract := &AcceptedContract{}
+	json.Unmarshal([]byte(contractResults), &apiResult{acceptedContract})
+	return *acceptedContract
+}
+
+func ListContracts(authToken string, limit int, page int) ContractList {
+	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
+	contractResult, err := SpaceTradersCommand(parameters, "my/contracts", authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing List Contracts endpoint. Error: ", err)
+	}
+	var contractList ContractList
+	json.Unmarshal([]byte(contractResult), &contractList)
+	return contractList
+}
+
+func GetContract(authToken string, contractID string) Contract {
+	parameters := fmt.Sprintf(`{"contractID": "%s"}`, contractID)
+	contractURL := fmt.Sprintf("my/contracts/%s", contractID)
+	contractResults, err := SpaceTradersCommand(parameters, contractURL, authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing Get Contract endpoint. Error: ", err)
+	}
+	contract := &Contract{}
+	json.Unmarshal([]byte(contractResults), &apiResult{contract})
+	return *contract
+}
+
 type FactionList struct {
 	Factions []Faction `json:"data"`
 	Meta     map[string]int
@@ -83,6 +142,30 @@ type Faction struct {
 	Headquarters string
 	Traits       []map[string]string
 	IsRecruiting bool
+}
+
+func GetFaction(authToken string, factionSymbol string) Faction {
+	parameters := fmt.Sprintf(`{"factionSymbol": "%s"}`, factionSymbol)
+	factionURL := fmt.Sprintf("factions/%s", factionSymbol)
+	factionResults, err := SpaceTradersCommand(parameters, factionURL, authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing Get Faction endpoint. Error: ", err)
+	}
+	faction := &Faction{}
+	json.Unmarshal([]byte(factionResults), &apiResult{faction})
+	return *faction
+}
+
+func ListFactions(authToken string, limit int, page int) FactionList {
+	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
+	factionResult, err := SpaceTradersCommand(parameters, "factions", authToken, "get")
+	if err != nil {
+		fmt.Println("Error accessing List Contracts endpoint. Error: ", err)
+	}
+	//fmt.Printf("List Factions debugging from API: %s", factionResult)
+	var factionList FactionList
+	json.Unmarshal([]byte(factionResult), &factionList)
+	return factionList
 }
 
 type DestinationDepartureWaypoints struct {
@@ -271,16 +354,6 @@ func SpaceTradersCommand(parameters string, endpoint string, authToken string, h
 	return "Something went wrong", fmt.Errorf("error")
 }
 
-func GetAgent(authToken string) Agent {
-	agentResult, err := SpaceTradersCommand("", "my/agent", authToken, "get")
-	if err != nil {
-		fmt.Println("Error accessing Get Agent endpoint. Error: ", err)
-	}
-	agent := &Agent{}
-	json.Unmarshal([]byte(agentResult), &apiResult{agent})
-	return *agent
-}
-
 func GetStatus(authToken string) ServerStatus {
 	statusResult, err := SpaceTradersCommand("", "", authToken, "get")
 	if err != nil {
@@ -290,78 +363,4 @@ func GetStatus(authToken string) ServerStatus {
 	var status ServerStatus
 	json.Unmarshal([]byte(statusResult), &status)
 	return status
-}
-
-func AcceptContract(authToken string, contractID string) AcceptedContract {
-	contractURL := fmt.Sprintf("my/contracts/%s/accept", contractID)
-
-	contractResults, err := SpaceTradersCommand("", contractURL, authToken, "post")
-	if err != nil {
-		fmt.Println("Error accessing Accept Contract endpoint. Error: ", err)
-	}
-	acceptedContract := &AcceptedContract{}
-	json.Unmarshal([]byte(contractResults), &apiResult{acceptedContract})
-	return *acceptedContract
-}
-
-func ListContracts(authToken string, limit int, page int) ContractList {
-	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
-	contractResult, err := SpaceTradersCommand(parameters, "my/contracts", authToken, "get")
-	if err != nil {
-		fmt.Println("Error accessing List Contracts endpoint. Error: ", err)
-	}
-	var contractList ContractList
-	json.Unmarshal([]byte(contractResult), &contractList)
-	return contractList
-}
-
-func GetContract(authToken string, contractID string) Contract {
-	parameters := fmt.Sprintf(`{"contractID": "%s"}`, contractID)
-	contractURL := fmt.Sprintf("my/contracts/%s", contractID)
-	contractResults, err := SpaceTradersCommand(parameters, contractURL, authToken, "get")
-	if err != nil {
-		fmt.Println("Error accessing Get Contract endpoint. Error: ", err)
-	}
-	contract := &Contract{}
-	json.Unmarshal([]byte(contractResults), &apiResult{contract})
-	return *contract
-}
-
-func GetFaction(authToken string, factionSymbol string) Faction {
-	parameters := fmt.Sprintf(`{"factionSymbol": "%s"}`, factionSymbol)
-	factionURL := fmt.Sprintf("factions/%s", factionSymbol)
-	factionResults, err := SpaceTradersCommand(parameters, factionURL, authToken, "get")
-	if err != nil {
-		fmt.Println("Error accessing Get Faction endpoint. Error: ", err)
-	}
-	faction := &Faction{}
-	json.Unmarshal([]byte(factionResults), &apiResult{faction})
-	return *faction
-}
-
-func ListFactions(authToken string, limit int, page int) FactionList {
-	parameters := fmt.Sprintf(`{"limit": %d, "page": %d}`, limit, page)
-	factionResult, err := SpaceTradersCommand(parameters, "factions", authToken, "get")
-	if err != nil {
-		fmt.Println("Error accessing List Contracts endpoint. Error: ", err)
-	}
-	//fmt.Printf("List Factions debugging from API: %s", factionResult)
-	var factionList FactionList
-	json.Unmarshal([]byte(factionResult), &factionList)
-	return factionList
-}
-
-func RegisterNewAgent(faction string, agentName string) string {
-	parameters := fmt.Sprintf(`{"symbol": "%s", "faction": "%s" }`, agentName, faction)
-	registrationResult, err := SpaceTradersCommand(parameters, "register", "", "post")
-	if err != nil {
-		fmt.Println("Error registering. Error: ", err)
-	}
-	//fmt.Println(registrationResult)
-	agent := &NewAgentResponse{}
-	json.Unmarshal([]byte(registrationResult), &apiResult{agent})
-	contract := AcceptContract(agent.Token, agent.Contract.Id)
-	fmt.Printf("Was the contract accepted? %t\n", contract.ContractDetails.Accepted)
-	fmt.Printf("Your deadline to complete the contract is: %s\n", contract.ContractDetails.Terms.Deadline)
-	return agent.Token
 }
