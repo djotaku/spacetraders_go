@@ -473,7 +473,7 @@ type NavigateShipResult struct{
 }
 
 func NavigateShip(authToken, string, shipSymbol string, waypointSymbol string) (ShipFuel, ShipNav) {
-	parameters := fmt.Sprintf('{"wapointSymbol": "%s"}' waypoinwaypointSymbol)
+	parameters := fmt.Sprintf(`{"wapointSymbol": "%s"}`, waypointSymbol)
 	url := fmt.Sprintf("my/ships/%s/navigate", shipSymbol)
 	shipResult, err := SpaceTradersCommand(parameters, url, authToken, "post")
 	if err != nil {
